@@ -1,8 +1,14 @@
 # KERNEL — Inside the Machine Learning Model
 
 ## Current Milestone
-**Phase 5 — Educational Slides (Chapters 01–04, 06–07)** (complete, 2026-11-22)
-Next: Phase 6 — Interactive KERNEL Laboratory (Slide 22).
+**Phase A — Safe Checkpoint Complete (Ready for Phase B: ALS ML Backend)** (2026-11-22)
+
+## Migration Log (KERNEL → ORBIT)
+- **Target Architecture:** KERNEL / ORBIT — Personalized Product Recommendation via Implicit Matrix Factorization (ALS) on the UCI Online Retail dataset
+- **Base Checkpoint Commit (on `main`):** `f87ce88` (`feat: phase 5 educational slides and editorial primitives (pre-orbit checkpoint)`)
+- **Migration Branch:** `feat/orbit-matrix-factorization`
+- **Current Milestone:** `Phase A — Safe Checkpoint Complete (Ready for Phase B: ALS ML Backend)`
+- **Preservation Policy:** Existing KNN backend (`backend/app/ml/`) is preserved intact until the ALS backend is independently built and verified.
 
 ## Completed Features
 ### Phase 1 — Workspace & Scaffold
