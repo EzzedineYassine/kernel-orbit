@@ -1,6 +1,7 @@
-import { ChevronLeft, ChevronRight, LayoutGrid, Maximize } from 'lucide-react'
+import { ChevronLeft, ChevronRight, LayoutGrid, Maximize2, Minimize2 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { chapterStartIndex } from '../chapters/registry'
+import type { FullscreenControls } from '../hooks/useFullscreen'
 import { usePresentation } from '../hooks/usePresentation'
 import { SlideOverview } from './SlideOverview'
 
@@ -38,7 +39,7 @@ function HudButton({
 }
 
 /** Persistent presentation chrome: brand, chapter, progress, controls, overview. */
-export function PresentationHUD() {
+export function PresentationHUD({ fullscreen }: { fullscreen: FullscreenControls }) {
   const {
     chapters,
     currentIndex,
@@ -147,9 +148,19 @@ export function PresentationHUD() {
             >
               <LayoutGrid size={15} />
             </HudButton>
-            {/* Stub: wired to the Fullscreen API in Phase 3. */}
-            <HudButton label="Fullscreen (available in Phase 3)" disabled>
-              <Maximize size={15} />
+            <HudButton
+              label={
+                !fullscreen.isSupported
+                  ? 'Fullscreen not supported in this browser'
+                  : fullscreen.isFullscreen
+                    ? 'Exit fullscreen (Esc)'
+                    : 'Enter fullscreen'
+              }
+              onClick={fullscreen.toggleFullscreen}
+              disabled={!fullscreen.isSupported}
+              active={fullscreen.isFullscreen}
+            >
+              {fullscreen.isFullscreen ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
             </HudButton>
           </div>
         </div>

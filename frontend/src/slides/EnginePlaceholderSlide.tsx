@@ -62,6 +62,31 @@ export function createPlaceholderSlide(
             <p className="mt-[4cqh] font-mono text-[10px] tracking-[0.2em] text-kernel-muted/60 uppercase">
               Engine placeholder · {slide.id}
             </p>
+
+            {slide.isInteractive && (
+              /* PHASE 3 QA fixture — verifies keyboard/wheel guards inside an
+                 interactive zone. Replaced by the real Laboratory in Phase 6. */
+              <div
+                data-interactive-zone="true"
+                data-testid="interactive-zone-fixture"
+                className="glass-surface mt-[3cqh] flex w-[38cqw] flex-col gap-2 rounded-sm px-4 py-3 text-left"
+              >
+                <span className="font-mono text-[10px] tracking-[0.2em] text-kernel-secondary">
+                  INTERACTIVE ZONE · GUARD TEST
+                </span>
+                <span className="text-[11px] text-kernel-muted">
+                  Wheel, arrows and Space inside this box must not change slides.
+                </span>
+                <input
+                  type="range"
+                  min={1}
+                  max={25}
+                  defaultValue={5}
+                  aria-label="Test slider (k)"
+                  className="w-full accent-[#22D3EE]"
+                />
+              </div>
+            )}
           </div>
         </SlideLayout>
       </>
