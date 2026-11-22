@@ -1,0 +1,27 @@
+/*
+ * KERNEL design tokens.
+ * Declared via Tailwind v4 `@theme` so every token is available both as a
+ * CSS custom property (var(--color-kernel-bg)) and as a utility class
+ * (bg-kernel-bg, text-kernel-muted, border-kernel-border, font-display, ...).
+ */
+@theme {
+  /* Palette */
+  --color-kernel-bg: #08090d;
+  --color-kernel-surface: #11131a;
+  --color-kernel-primary: #a78bfa;
+  --color-kernel-secondary: #22d3ee;
+  --color-kernel-text: #f5f5f7;
+  --color-kernel-muted: #858a98;
+  --color-kernel-border: #252834;
+
+  /* Typography */
+  --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Layout tokens (HUD clearance used by SlideLayout). */
+:root {
+  --kernel-hud-top: 72px;
+  --kernel-hud-bottom: 104px;
+}
