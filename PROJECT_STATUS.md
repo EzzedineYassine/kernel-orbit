@@ -1,8 +1,8 @@
 # KERNEL — Inside the Machine Learning Model
 
 ## Current Milestone
-**Phase 4 — FastAPI + Scikit-learn ML Backend** (complete, 2026-11-22)
-Next: Phase 5 — Real slide content & visualizations.
+**Phase 5 — Educational Slides (Chapters 01–04, 06–07)** (complete, 2026-11-22)
+Next: Phase 6 — Interactive KERNEL Laboratory (Slide 22).
 
 ## Completed Features
 ### Phase 1 — Workspace & Scaffold
@@ -18,36 +18,46 @@ Next: Phase 5 — Real slide content & visualizations.
 - `domGuards.ts`, `useKeyboardNavigation.ts`, `useWheelNavigation.ts`, `useFullscreen.ts`, `slideTransitions.ts`, `PresentationShell.tsx`, enabled HUD fullscreen toggle, Slide 22 interactive-zone QA fixture
 
 ### Phase 4 — FastAPI + Scikit-learn ML Backend
-- Dependencies pinned in `backend/requirements.txt` inside `backend/.venv` (Python 3.12.14): `fastapi==0.165.0`, `uvicorn[standard]==0.54.0`, `scikit-learn==1.9.1`, `numpy==2.5.5`, `pandas==3.1.1`, `joblib==1.6.0`, `pydantic==2.14.4`, `pytest==9.2.0`, `httpx==0.28.1`
-- Dataset (`backend/app/ml/dataset.py`): Iris petal features (`petal_length`, `petal_width`), deterministic stratified 80/20 split (`random_state=42`, 120 train / 30 test, exact 40/10 per species), read-only cached arrays, bounds, class summary
-- ML Service (`backend/app/ml/model_service.py`): thread-safe `KNNModelService` using `Pipeline([("scaler", StandardScaler()), ("knn", KNeighborsClassifier(...))])` fit exclusively on `X_train, y_train` (zero leakage); live reconfiguration (`k` 1–15, `euclidean|manhattan`, `uniform|distance`); `predict`, `neighbors`, `boundary` (meshgrid 20..120, default 60), `experiment` (Stratified 5-Fold CV on training split only + optional probe point)
-- Evaluator (`backend/app/ml/evaluator.py`): held-out 20% test set accuracy, macro + per-class precision/recall/F1/support, 3×3 confusion matrix, train vs test accuracy, 5-fold stratified train CV mean/std
-- Schemas & API (`backend/app/schemas/models.py`, `backend/app/api/routes.py`, `backend/app/main.py`): strict Pydantic v2 validation (`extra="forbid"`), CORS for local Vite origins + `KERNEL_CORS_ORIGINS` env override, all 8 endpoints (`/api/health`, `/api/dataset`, `/api/model/configure`, `/api/model/predict`, `/api/model/neighbors`, `/api/model/boundary`, `/api/model/evaluate`, `/api/model/experiment`)
-- Automated test suite (`backend/tests/test_api.py` + `backend/pytest.ini`): 31 Pytest cases covering endpoints, CORS, stratified split, zero-leakage scaler check, real inference/metric/weight/boundary dynamics, experiment mode, and 422 validation
+- Committed as `048aaac feat: phase 4 fastapi and scikit-learn knn backend`
+- Leakage-free Scikit-learn `Pipeline(StandardScaler, KNeighborsClassifier)` on Iris petal features (stratified 80/20 split), 8 FastAPI endpoints, strict Pydantic v2 schemas, CORS, 31 passing Pytest tests
+
+### Phase 5 — Educational Slides (29 Slides + Editorial Primitives)
+- Reusable editorial & scientific primitives (`frontend/src/components/`):
+  - `ChapterHeader.tsx`, `MathFormula.tsx`, `DiagramFrame.tsx`, `SplitLayout.tsx`, `MetricCard.tsx`, `irisPalette.ts`
+- All 29 educational slides implemented with custom SVG diagrams and restrained Framer Motion choreography (only Slide 22 remains `EnginePlaceholderSlide` for Phase 6):
+  - **Ch 01 — The Awakening (Slides 1–5):** `Slide01Awakening`, `Slide02CentralQuestion`, `Slide03ArtificialIntelligence`, `Slide04MachineLearning`, `Slide05TraditionalVsML`
+  - **Ch 02 — Understanding the Model (Slides 6–10):** `Slide06WhatIsModel`, `Slide07AlgorithmVsModel`, `Slide08DatasetAnatomy`, `Slide09LearningParadigms`, `Slide10SupervisedClassification`
+  - **Ch 03 — How Learning Happens (Slides 11–15):** `Slide11MLLifecycle`, `Slide12PreprocessingScaling`, `Slide13TrainTestSplit`, `Slide14Generalization`, `Slide15LazyLearning`
+  - **Ch 04 — Meet KNN (Slides 16–21):** `Slide16MeetKNN`, `Slide17NeighborIntuition`, `Slide18EuclideanDistance`, `Slide19KNNSteps`, `Slide20WhyKMatter`, `Slide21ScalingAndMetrics`
+  - **Ch 06 — The Reality Check (Slides 23–27):** `Slide23WhatMakesModelGood`, `Slide24Metrics`, `Slide25ConfusionMatrix`, `Slide26OverfittingUnderfitting`, `Slide27ModelLimitations` — zero hardcoded fake numbers; clean Phase 7 live-metric slots (`— —` / `—` / `"Live metrics connect in Phase 7"`)
+  - **Ch 07 — Beyond the Algorithm (Slides 28–30):** `Slide28RealWorldApplications`, `Slide29WhatWeLearned`, `Slide30Conclusion`
+- Updated `frontend/src/chapters/registry.ts` with final slide titles and components across all 7 chapters / 30 slides.
 
 ## Pending Features
-- Phases 5–6: real slide content replacing placeholders; KERNEL Laboratory frontend views wired to the FastAPI backend
+- Phase 6: Interactive KERNEL Laboratory (Slide 22 — D3/Canvas scatter plot, decision boundary, K/metric/weights controls, neighbor inspection)
+- Phase 7: Live frontend ↔ FastAPI integration (wiring Lab + Chapter 06 live evaluation/experiment slots)
 - Frontend unit/E2E test suite
 
 ## Known Bugs
 - None known.
 - Cosmetic: chapter markers 05 and 06 sit close together on the progress line (Ch 05 has a single slide) — by design of proportional placement.
-- Note: `starlette==1.10.0` emits a deprecation warning when using `httpx` with `TestClient` (suggesting `httpx2`); `httpx` was explicitly requested for Phase 4 and all 31 tests pass cleanly.
+- Note: Vite build emits an informational >500 kB chunk-size notice (`578.73 kB` / `176.75 kB` gzip) with React + GSAP + Framer Motion + 29 slides in a single bundle; candidate for manual vendor chunk splitting in Phase 6/7.
 
 ## Architectural Decisions
-- **Monorepo:** `backend/` (Python 3.12) + `frontend/` (Vite/React/TS) + `docs/`. Python 3.12 venv built from uv-managed CPython 3.12.14.
-- **Zero-leakage ML pipeline:** `StandardScaler` lives inside the Scikit-learn `Pipeline` and is fitted exclusively on `X_train, y_train` (and refitted per fold during 5-fold Stratified CV in `evaluate` and `experiment`). Test set is never touched during scaling or CV.
-- **Atomic thread-safe reconfiguration:** `KNNModelService` builds and fits a new immutable `ModelSnapshot(config, pipeline)` and swaps it under an `RLock`, so concurrent requests never observe partial state.
-- **Partial & full `/model/configure` updates:** optional fields (`k`, `metric`, `weights`) inherit active config values when omitted while strictly validating ranges/literals and rejecting unknown fields (`extra="forbid"`).
-- **Boundary matrix convention:** `predictions[y_index][x_index]` and `confidences[y_index][x_index]` (row = `petal_width`, col = `petal_length`, `meshgrid(..., indexing="xy")`) for direct HTML Canvas / D3 raster rendering; resolution validated `20..120` in Pydantic and clamped in the service layer.
-- **Frontend engine decisions (Phases 2–3):** Tailwind v4 `@theme`, viewport lock + pure-CSS 16:9 canvas, context split for Fast Refresh, `PresentationShell` global input mount, `gsap.ticker.lagSmoothing(0)`, wheel 600ms cooldown + 220ms momentum-stream lock.
+- **Monorepo:** `backend/` (Python 3.12) + `frontend/` (Vite/React/TS) + `docs/`.
+- **Zero-leakage ML pipeline:** `StandardScaler` inside Scikit-learn `Pipeline`, fit strictly on `X_train, y_train` (and per fold in 5-fold Stratified CV).
+- **Container-scaled slide typography:** all 29 educational slides use `cqw`/`cqh` container units with `clamp()` bounds and `min-h-0 flex-1` / `grid-rows-*` containment inside `.kernel-canvas` so slides scale cleanly across `970×694`, `1280×720`, and `1440×900` with zero scrollbars.
+- **Restrained scientific palette:** `#08090D`, `#11131A`, `#A78BFA`, `#22D3EE`, `#F5F5F7`, `#858A98`, `#252834` plus `#34D399` strictly as the 3rd Iris species phosphor tone (`irisPalette.ts`).
+- **Live-data slot props in Chapter 06:** `Slide24Metrics`, `Slide25ConfusionMatrix`, and `Slide26OverfittingUnderfitting` accept optional `live` slot props defaulting to `null` (rendering explicit Phase 7 empty slots), avoiding fake hardcoded metrics while keeping Phase 7 wiring frictionless.
 
 ## Test Results
-- Phase 1: `npm install` OK; `npm run build` PASS; `.venv` (Python 3.12.14) OK
-- Phase 2: `npm run build` PASS; `oxlint` 0 warnings/0 errors; browser layout QA 7/7 PASS
-- Phase 3: `npm run build` PASS (JS 313.03 kB / 103.33 kB gzip); `oxlint` 0 warnings/0 errors; browser input QA PASS (fullscreen environment-blocked in headless webview, 0 console errors)
-- Phase 4: `backend/.venv/Scripts/pytest.exe -v` — **31 passed, 0 failed** (1 Starlette/httpx deprecation warning) in 8.54s
-  - Default `k=5, euclidean, uniform`: `train_accuracy = 0.975`, `test_accuracy = 0.9667` (29/30), `cv_mean_accuracy = 0.9667 ± 0.0167`
+- Phase 1–3: `npm run build` PASS; `oxlint` 0 warnings/0 errors; browser layout & input QA PASS
+- Phase 4: `backend/.venv/Scripts/pytest.exe -v` — **31 passed, 0 failed**
+- Phase 5:
+  - `npm run build` (`tsc -b && vite build`) — **PASS, 0 TS errors, 0 build errors**
+    - JS `578.73 kB` (`176.75 kB` gzip) · CSS `33.90 kB` (`7.31 kB` gzip) · HTML `0.89 kB`
+  - `npx oxlint` — **PASS, 0 warnings, 0 errors** (54 files, 116 rules)
+  - Browser QA sweep across all 30 slides at `1280×720` and `1440×900` — **30/30 PASS**, zero scrollbars, zero HUD overlaps, zero console errors; keyboard (`Home`/`End`/`ArrowLeft`/`ArrowRight`) and mouse wheel navigation verified; 6 visual defects caught on first sweep (Slide 02 SVG box fit, Slide 13 bar animation width, Slide 19 card/tip overlap, Slide 29 row 05 footer overlap, `DiagramFrame` figure tag wrapping/truncation, `MetricCard` orphan `"7"` wrap) all fixed and re-verified clean.
 
 ## Next Tasks
-- Phase 5: Real slide content & visual architecture (awaiting Project Director instructions)
+- Phase 6: Interactive KERNEL Laboratory on Slide 22 (awaiting Project Director instructions)
