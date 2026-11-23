@@ -1,97 +1,118 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { ChapterHeader } from '../../components/ChapterHeader'
 import { DiagramFrame } from '../../components/DiagramFrame'
-import { IRIS_SPECIES } from '../../components/irisPalette'
 import { MetricCard } from '../../components/MetricCard'
+import { useOrbitData } from '../../hooks/useOrbitData'
 import { SlideLayout } from '../../presentation/SlideLayout'
 
-/** Slide 13 — Training & Testing Datasets (Stratified 80/20 + Leakage Warning) */
+/** Slide 13 — Chronological Train / Test Split (Zero Future Leakage) */
 export function Slide13TrainTestSplit() {
   const reduced = useReducedMotion()
+  const { summary } = useOrbitData()
+
+  const trainTx = summary ? summary.train_transaction_rows.toLocaleString() : '— —'
+  const testTx = summary ? summary.test_transaction_rows.toLocaleString() : '— —'
+  const cutoff = summary ? summary.split_cutoff_date : 'LIVE CUTOFF (80%)'
+  const warmUsers = summary ? summary.test_warm_eval_users.toLocaleString() : '— —'
+  const coldUsers = summary ? summary.test_cold_start_users.toLocaleString() : '— —'
 
   return (
     <SlideLayout>
       <div className="col-span-12 flex h-full min-h-0 flex-col gap-[2cqh]">
         <div className="flex items-end justify-between gap-6">
           <ChapterHeader
-            eyebrow="CHAPTER 03 · DISCIPLINED EVALUATION"
+            eyebrow="CHAPTER 03 · TEMPORAL DISCIPLINE"
             title={
               <>
-                Stratified <span className="text-[#22D3EE]">80 / 20</span> Split
+                Chronological <span className="text-[#22D3EE]">80 / 20</span> Split
               </>
             }
-            subtitle="Never judge a model on the same examples it studied. Hold out an untouched test set with balanced class ratios."
+            subtitle="Never shuffle shopping history randomly. Train strictly on earlier months and evaluate on future unseen purchases."
             compact
           />
 
           <div className="flex shrink-0 gap-3">
-            <MetricCard label="Train Split" value="120" note="80% · Fit & 5-fold CV" accent="primary" compact />
-            <MetricCard label="Test Split" value="30" note="20% · Held-out exam" accent="secondary" compact />
+            <MetricCard
+              label="Warm Eval Users"
+              value={summary ? warmUsers : null}
+              note="Have train + unseen test buys"
+              accent="secondary"
+              slotLabel="Connect ORBIT backend"
+              compact
+            />
+            <MetricCard
+              label="Cold-Start Test"
+              value={summary ? coldUsers : null}
+              note="Zero training history"
+              accent="primary"
+              slotLabel="Connect ORBIT backend"
+              compact
+            />
           </div>
         </div>
 
         <DiagramFrame
           figure="FIG 03.C"
-          title="STRATIFIED IRIS PARTITION (RANDOM_STATE = 42)"
-          meta="40 TRAIN / 10 TEST PER SPECIES"
-          caption="Stratification guarantees every species keeps an exact 80/20 ratio across training and evaluation."
+          title="TEMPORAL PARTITION"
+          meta={`CUTOFF: ${cutoff}`}
+          caption="Future invoices never leak into training thresholds, product catalogs, or ALS latent vectors."
           className="min-h-0 flex-1"
           bodyClassName="flex-col items-stretch justify-center gap-4 px-2"
         >
-          {/* Per-species split bars */}
-          <div className="flex flex-col gap-3">
-            {IRIS_SPECIES.map((sp, idx) => (
-              <div key={sp.id} className="grid grid-cols-12 items-center gap-3">
-                <div className="col-span-3 flex items-center gap-2 font-mono text-[clamp(10.5px,0.9cqw,12.5px)] text-[#F5F5F7]">
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: sp.color }} />
-                  <span>{sp.name}</span>
-                </div>
+          {/* Timeline bar */}
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-between font-mono text-[clamp(9.5px,0.78cqw,11px)] text-[#858A98]">
+              <span>{summary?.date_min ?? '2010-12-01'}</span>
+              <span className="text-[#22D3EE]">TEMPORAL CUTOFF · {cutoff}</span>
+              <span>{summary?.date_max ?? '2011-12-09'}</span>
+            </div>
 
-                <div className="col-span-9 flex h-9 overflow-hidden rounded-sm border border-[#252834] bg-[#08090D]">
-                  <div className="relative flex w-[80%] shrink-0 items-center justify-between overflow-hidden border-r border-[#08090D] px-3 font-mono text-[clamp(10px,0.82cqw,11.5px)]">
-                    <motion.span
-                      initial={reduced ? false : { scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
-                      transition={{ duration: 0.5, delay: 0.1 + idx * 0.08 }}
-                      style={{ backgroundColor: `${sp.color}22`, transformOrigin: 'left center' }}
-                      className="pointer-events-none absolute inset-0"
-                      aria-hidden
-                    />
-                    <span className="relative z-10 font-medium" style={{ color: sp.color }}>
-                      TRAIN
-                    </span>
-                    <span className="relative z-10 whitespace-nowrap" style={{ color: sp.color }}>
-                      40 samples
-                    </span>
-                  </div>
-                  <motion.div
-                    initial={reduced ? false : { opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.4, delay: 0.35 + idx * 0.08 }}
-                    className="flex w-[20%] shrink-0 items-center justify-between bg-[#11131A] px-2.5 font-mono text-[clamp(9.5px,0.78cqw,11px)] text-[#F5F5F7]"
-                  >
-                    <span>TEST</span>
-                    <span>10</span>
-                  </motion.div>
-                </div>
+            <div className="flex h-12 overflow-hidden rounded-sm border border-[#252834] bg-[#08090D]">
+              <div className="relative flex w-[80%] shrink-0 items-center justify-between overflow-hidden border-r-2 border-[#22D3EE] px-4 font-mono text-[clamp(10px,0.85cqw,12px)]">
+                <motion.span
+                  initial={reduced ? false : { scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.55, delay: 0.1 }}
+                  style={{ transformOrigin: 'left center' }}
+                  className="pointer-events-none absolute inset-0 bg-[#A78BFA]/20"
+                  aria-hidden
+                />
+                <span className="relative z-10 font-medium text-[#A78BFA]">
+                  TRAINING WINDOW (EARLIER 80%)
+                </span>
+                <span className="relative z-10 text-[#F5F5F7] tabular-nums">{trainTx} rows</span>
               </div>
-            ))}
+
+              <motion.div
+                initial={reduced ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4, delay: 0.35 }}
+                className="flex w-[20%] shrink-0 flex-col items-center justify-center bg-[#22D3EE]/12 px-2 font-mono text-[clamp(9px,0.76cqw,11px)]"
+              >
+                <span className="font-medium text-[#22D3EE]">FUTURE 20%</span>
+                <span className="text-[#F5F5F7] tabular-nums">{testTx}</span>
+              </motion.div>
+            </div>
           </div>
 
-          {/* Zero-leakage warning callout */}
-          <div className="flex items-center justify-between gap-4 rounded-sm border border-[#A78BFA]/45 bg-[#A78BFA]/8 px-4 py-2.5">
-            <div className="flex items-center gap-3">
-              <span className="rounded-sm border border-[#A78BFA] px-2 py-0.5 font-mono text-[clamp(9px,0.74cqw,10.5px)] tracking-[0.16em] text-[#A78BFA]">
-                ZERO LEAKAGE RULE
-              </span>
-              <span className="font-sans text-[clamp(11px,0.94cqw,13.5px)] text-[#F5F5F7]">
-                <code className="font-mono text-[#22D3EE]">StandardScaler</code> computes μ and σ strictly on the{' '}
-                <strong className="font-semibold text-[#F5F5F7]">120 training rows</strong> — never on the 30 test rows.
-              </span>
+          {/* 2 structured rules */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-sm border border-[#A78BFA]/45 bg-[#A78BFA]/8 px-4 py-2.5">
+              <div className="font-mono text-[clamp(9px,0.74cqw,10.5px)] tracking-[0.16em] text-[#A78BFA]">
+                ZERO FUTURE LEAKAGE
+              </div>
+              <p className="mt-1 font-sans text-[clamp(11px,0.9cqw,13px)] text-[#F5F5F7]">
+                Interaction thresholds (≥5), product descriptions, and ALS factor matrices are computed strictly on the earlier training window.
+              </p>
             </div>
-            <span className="shrink-0 font-mono text-[clamp(9.5px,0.78cqw,11px)] text-[#858A98]">
-              VERIFIED IN PYTEST
-            </span>
+            <div className="rounded-sm border border-[#22D3EE]/45 bg-[#22D3EE]/8 px-4 py-2.5">
+              <div className="font-mono text-[clamp(9px,0.74cqw,10.5px)] tracking-[0.16em] text-[#22D3EE]">
+                UNSEEN FUTURE DISCOVERY
+              </div>
+              <p className="mt-1 font-sans text-[clamp(11px,0.9cqw,13px)] text-[#F5F5F7]">
+                Already-purchased products are excluded from recommendations — evaluating true discovery of new products bought in the future window.
+              </p>
+            </div>
           </div>
         </DiagramFrame>
       </div>

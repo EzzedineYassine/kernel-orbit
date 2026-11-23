@@ -4,15 +4,15 @@ import { DiagramFrame } from '../../components/DiagramFrame'
 import { SlideLayout } from '../../presentation/SlideLayout'
 
 const STAGES = [
-  { num: '01', name: 'Data', detail: 'Collect 150 labeled Iris observations', accent: '#858A98' },
-  { num: '02', name: 'Preprocess', detail: 'Clean & validate features (no leakage)', accent: '#A78BFA' },
-  { num: '03', name: 'Split', detail: 'Stratified 80 / 20 train-test partition', accent: '#22D3EE' },
-  { num: '04', name: 'Fit', detail: 'Fit scaler + KNN strictly on train set', accent: '#A78BFA' },
-  { num: '05', name: 'Evaluate', detail: 'Measure held-out test & 5-fold CV', accent: '#22D3EE' },
-  { num: '06', name: 'Infer', detail: 'Classify unseen points in real time', accent: '#F5F5F7' },
+  { num: '01', name: 'Ingest', detail: '541,909 UCI retail invoice lines', accent: '#858A98' },
+  { num: '02', name: 'Clean', detail: 'Drop returns, nulls & service fees', accent: '#A78BFA' },
+  { num: '03', name: 'Time Split', detail: 'Chronological 80 / 20 cutoff', accent: '#22D3EE' },
+  { num: '04', name: 'Factorize', detail: 'Build sparse CSR & fit ALS', accent: '#A78BFA' },
+  { num: '05', name: 'Evaluate', detail: 'Rank unseen future buys vs Pop', accent: '#22D3EE' },
+  { num: '06', name: 'Serve', detail: 'Top-N recommendations in RAM', accent: '#F5F5F7' },
 ] as const
 
-/** Slide 11 — The Machine Learning Lifecycle */
+/** Slide 11 — The Recommendation ML Lifecycle */
 export function Slide11MLLifecycle() {
   const reduced = useReducedMotion()
 
@@ -23,25 +23,23 @@ export function Slide11MLLifecycle() {
           eyebrow="CHAPTER 03 · HOW LEARNING HAPPENS"
           title={
             <>
-              The Machine Learning <span className="text-[#A78BFA]">Lifecycle</span>
+              The Recommendation <span className="text-[#A78BFA]">Lifecycle</span>
             </>
           }
-          subtitle="Training a reliable model is an engineering pipeline — order matters to prevent subtle bias."
+          subtitle="From messy historical invoices to live personalized rankings — strict chronological order prevents future leakage."
           compact
         />
 
         <DiagramFrame
           figure="FIG 03.A"
-          title="SIX-STAGE SUPERVISED PIPELINE"
-          meta="DATA → MODEL → INFERENCE"
-          caption="Note: Fitting any scaling or feature transform happens strictly inside Stage 04 on the training split alone."
+          title="SIX-STAGE RECOMMENDATION PIPELINE"
+          meta="LOGS → SPARSE R → U · Vᵀ"
+          caption="Thresholds, product catalogs, and ALS latent factors are built strictly on earlier training transactions alone."
           className="min-h-0 flex-1"
           bodyClassName="flex-col justify-center"
         >
-          <div className="flex w-full flex-col gap-[3cqh] px-2">
-            {/* Animated horizontal flow */}
+          <div className="flex w-full flex-col gap-[2.8cqh] px-2">
             <svg viewBox="0 0 1040 165" className="w-full" preserveAspectRatio="xMidYMid meet">
-              {/* Connecting track */}
               <motion.line
                 x1="82"
                 y1="68"
@@ -90,7 +88,7 @@ export function Slide11MLLifecycle() {
                     <text x={cx - 54} y="46" fill={stage.accent} fontSize="10" fontFamily="JetBrains Mono" letterSpacing="1.5">
                       STAGE {stage.num}
                     </text>
-                    <text x={cx - 54} y="74" fill="#F5F5F7" fontSize="17" fontFamily="Space Grotesk" fontWeight="600">
+                    <text x={cx - 54} y="74" fill="#F5F5F7" fontSize="16.5" fontFamily="Space Grotesk" fontWeight="600">
                       {stage.name}
                     </text>
                     <line x1={cx - 54} y1="86" x2={cx + 54} y2="86" stroke="#252834" />
@@ -103,7 +101,6 @@ export function Slide11MLLifecycle() {
                 )
               })}
 
-              {/* Iteration feedback loop from Evaluate back to Fit */}
               <motion.path
                 d="M 782 120 L 782 148 L 607 148 L 607 124"
                 fill="none"
@@ -116,11 +113,10 @@ export function Slide11MLLifecycle() {
               />
               <polygon points="602,126 607,117 612,126" fill="#A78BFA" />
               <text x="694" y="160" textAnchor="middle" fill="#A78BFA" fontSize="9.5" fontFamily="JetBrains Mono" letterSpacing="1">
-                TUNE HYPERPARAMETERS (CV ONLY)
+                TUNE FACTORS · ITERATIONS · REGULARIZATION
               </text>
             </svg>
 
-            {/* Stage notes row */}
             <div className="grid grid-cols-6 gap-2.5">
               {STAGES.map((stage) => (
                 <div

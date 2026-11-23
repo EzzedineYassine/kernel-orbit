@@ -34,7 +34,7 @@ export function Slide04MachineLearning() {
                 {
                   tag: 'MACHINE LEARNING',
                   color: '#A78BFA',
-                  text: 'Algorithms that improve from data (KNN, Trees, SVMs, Linear Models).',
+                  text: 'Algorithms that learn latent structure from data (Matrix Factorization, Trees, Linear Models).',
                 },
                 {
                   tag: 'DEEP LEARNING',
@@ -129,10 +129,10 @@ export function Slide04MachineLearning() {
               <line x1="336" y1="184" x2="416" y2="184" stroke="#A78BFA" />
               <circle cx="336" cy="184" r="3.5" fill="#A78BFA" />
               <text x="424" y="180" fill="#A78BFA" fontSize="11.5" fontFamily="Space Grotesk" fontWeight="600">
-                KNN · Classical ML
+                ALS · Matrix Factorization
               </text>
               <text x="424" y="196" fill="#858A98" fontSize="10" fontFamily="JetBrains Mono">
-                Interpretable · KERNEL Lab
+                Collaborative Filtering · ORBIT
               </text>
 
               <line x1="286" y1="252" x2="416" y2="252" stroke="#22D3EE" strokeDasharray="3 3" />

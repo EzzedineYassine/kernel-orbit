@@ -3,7 +3,7 @@ import { ChapterHeader } from '../../components/ChapterHeader'
 import { DiagramFrame } from '../../components/DiagramFrame'
 import { SlideLayout } from '../../presentation/SlideLayout'
 
-/** Slide 14 — Training, Inference & Generalization */
+/** Slide 14 — Training, Inference & Generalization in Recommendations */
 export function Slide14Generalization() {
   const reduced = useReducedMotion()
 
@@ -11,32 +11,29 @@ export function Slide14Generalization() {
     <SlideLayout>
       <div className="col-span-12 flex h-full min-h-0 flex-col gap-[2cqh]">
         <ChapterHeader
-          eyebrow="CHAPTER 03 · THE TRUE OBJECTIVE"
+          eyebrow="CHAPTER 03 · GENERALIZATION & REGULARIZATION"
           title={
             <>
-              Memorization is not <span className="text-[#A78BFA]">generalization.</span>
+              Memorizing baskets vs. <span className="text-[#A78BFA]">learning taste.</span>
             </>
           }
-          subtitle="Training fits known data; inference faces the unseen. Real learning means performing well on examples never observed before."
+          subtitle="Too many unregularized latent factors memorize historical noise; proper regularization (λ) generalizes to future purchases."
           compact
         />
 
         <div className="grid min-h-0 flex-1 grid-cols-12 gap-[2.2cqw]">
-          {/* Memorization */}
           <div className="col-span-6 flex min-h-0 flex-col">
             <DiagramFrame
-              figure="FIG 03.D · MEMORIZING NOISE"
-              meta="HIGH TRAIN / POOR UNSEEN"
-              caption="Chasing every noisy outlier yields 100% training score but misclassifies new observations (white rings)."
+              figure="FIG 03.D · OVERFIT FACTORS"
+              meta="HIGH k · TINY λ"
+              caption="Reconstructs past training orders tightly but fails when recommending unseen future items."
               className="h-full"
             >
-              <svg viewBox="0 0 420 245" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
-                <line x1="36" y1="210" x2="392" y2="210" stroke="#252834" />
-                <line x1="36" y1="22" x2="36" y2="210" stroke="#252834" />
-
-                {/* Jagged overfit boundary */}
+              <svg viewBox="0 0 420 240" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
+                <line x1="36" y1="204" x2="392" y2="204" stroke="#252834" />
+                <line x1="36" y1="22" x2="36" y2="204" stroke="#252834" />
                 <motion.path
-                  d="M 54 190 L 116 146 L 146 184 L 182 96 L 214 148 L 246 72 L 284 132 L 324 52 L 372 78"
+                  d="M 52 178 L 96 76 L 138 164 L 184 52 L 228 158 L 272 64 L 320 152 L 368 48"
                   fill="none"
                   stroke="#A78BFA"
                   strokeWidth="2"
@@ -44,40 +41,39 @@ export function Slide14Generalization() {
                   animate={{ pathLength: 1 }}
                   transition={{ duration: 0.85, delay: 0.15 }}
                 />
-
-                {/* Training points */}
-                {[[88, 126], [116, 108], [164, 72], [218, 66], [272, 46], [146, 166]].map(([cx, cy], i) => (
-                  <circle key={`m1-${i}`} cx={cx} cy={cy} r="4.5" fill="#22D3EE" />
+                {[[96, 76], [184, 52], [272, 64], [368, 48]].map(([cx, cy], i) => (
+                  <circle key={i} cx={cx} cy={cy} r="4.5" fill="#A78BFA" />
                 ))}
-                {[[162, 182], [228, 174], [280, 164], [332, 140], [344, 184], [214, 134]].map(([cx, cy], i) => (
-                  <circle key={`m2-${i}`} cx={cx} cy={cy} r="4.5" fill="#A78BFA" />
-                ))}
-
-                {/* Unseen test points (misclassified by jagged loop) */}
-                <circle cx="152" cy="144" r="7" fill="none" stroke="#F5F5F7" strokeWidth="1.75" />
-                <circle cx="242" cy="108" r="7" fill="none" stroke="#F5F5F7" strokeWidth="1.75" />
-                <text x="166" y="148" fill="#F5F5F7" fontSize="9" fontFamily="JetBrains Mono">
-                  unseen error
+                <circle cx="152" cy="116" r="7" fill="none" stroke="#F5F5F7" strokeWidth="1.75" />
+                <circle cx="296" cy="108" r="7" fill="none" stroke="#F5F5F7" strokeWidth="1.75" />
+                <line
+                  x1="156"
+                  y1="123"
+                  x2="188"
+                  y2="180"
+                  stroke="#858A98"
+                  strokeWidth="1"
+                  strokeDasharray="2.5 2.5"
+                />
+                <text x="248" y="191" textAnchor="middle" fill="#F5F5F7" fontSize="9.5" fontFamily="JetBrains Mono">
+                  missed future order
                 </text>
               </svg>
             </DiagramFrame>
           </div>
 
-          {/* Generalization */}
           <div className="col-span-6 flex min-h-0 flex-col">
             <DiagramFrame
-              figure="FIG 03.E · GENERALIZING STRUCTURE"
-              meta="STABLE ON UNSEEN DATA"
-              caption="Capturing the underlying trend tolerates training noise and classifies unseen points accurately."
+              figure="FIG 03.E · REGULARIZED FACTORS"
+              meta="BALANCED k · L₂ PENALTY λ"
+              caption="L₂ regularization shrinks noisy weights, capturing durable cross-product affinity across thousands of shoppers."
               className="h-full border-[#22D3EE]/55"
             >
-              <svg viewBox="0 0 420 245" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
-                <line x1="36" y1="210" x2="392" y2="210" stroke="#252834" />
-                <line x1="36" y1="22" x2="36" y2="210" stroke="#252834" />
-
-                {/* Smooth generalizing boundary */}
+              <svg viewBox="0 0 420 240" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
+                <line x1="36" y1="204" x2="392" y2="204" stroke="#252834" />
+                <line x1="36" y1="22" x2="36" y2="204" stroke="#252834" />
                 <motion.path
-                  d="M 54 190 C 140 162, 230 116, 372 48"
+                  d="M 52 178 C 138 148, 232 108, 368 58"
                   fill="none"
                   stroke="#22D3EE"
                   strokeWidth="2.25"
@@ -85,20 +81,13 @@ export function Slide14Generalization() {
                   animate={{ pathLength: 1 }}
                   transition={{ duration: 0.75, delay: 0.25 }}
                 />
-
-                {/* Training points */}
-                {[[88, 126], [116, 108], [164, 72], [218, 66], [272, 46], [146, 166]].map(([cx, cy], i) => (
-                  <circle key={`g1-${i}`} cx={cx} cy={cy} r="4.5" fill="#22D3EE" />
+                {[[96, 152], [184, 118], [272, 88], [344, 68]].map(([cx, cy], i) => (
+                  <circle key={i} cx={cx} cy={cy} r="4.5" fill="#22D3EE" />
                 ))}
-                {[[162, 182], [228, 174], [280, 164], [332, 140], [344, 184], [214, 134]].map(([cx, cy], i) => (
-                  <circle key={`g2-${i}`} cx={cx} cy={cy} r="4.5" fill="#A78BFA" />
-                ))}
-
-                {/* Unseen test points classified correctly */}
-                <circle cx="152" cy="144" r="7" fill="#22D3EE" fillOpacity="0.2" stroke="#F5F5F7" strokeWidth="1.75" />
-                <circle cx="242" cy="108" r="7" fill="#A78BFA" fillOpacity="0.2" stroke="#F5F5F7" strokeWidth="1.75" />
-                <text x="256" y="112" fill="#22D3EE" fontSize="9" fontFamily="JetBrains Mono">
-                  unseen correct
+                <circle cx="152" cy="134" r="7" fill="#22D3EE" fillOpacity="0.2" stroke="#F5F5F7" strokeWidth="1.75" />
+                <circle cx="296" cy="84" r="7" fill="#22D3EE" fillOpacity="0.2" stroke="#F5F5F7" strokeWidth="1.75" />
+                <text x="206" y="160" fill="#22D3EE" fontSize="9.5" fontFamily="JetBrains Mono">
+                  generalizes to unseen future buys
                 </text>
               </svg>
             </DiagramFrame>

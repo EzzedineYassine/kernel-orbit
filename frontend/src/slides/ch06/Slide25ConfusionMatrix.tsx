@@ -1,148 +1,157 @@
+import { motion, useReducedMotion } from 'framer-motion'
 import { ChapterHeader } from '../../components/ChapterHeader'
 import { DiagramFrame } from '../../components/DiagramFrame'
-import { IRIS_SPECIES } from '../../components/irisPalette'
+import { MetricCard } from '../../components/MetricCard'
 import { SplitLayout } from '../../components/SplitLayout'
+import { useOrbitData } from '../../hooks/useOrbitData'
 import { SlideLayout } from '../../presentation/SlideLayout'
 
-export interface ConfusionMatrixSlotData {
-  matrix: readonly (readonly number[])[] | null
-}
+/** Slide 25 — Catalog Coverage & Popularity Bias (Live ALS vs. Popularity) */
+export function Slide25ConfusionMatrix() {
+  const reduced = useReducedMotion()
+  const { metrics, loading } = useOrbitData()
+  const als = metrics?.als.at_10
+  const pop = metrics?.popularity_baseline.at_10
+  const catalogSize = metrics?.catalog_size ?? null
+  const slotLabel = loading ? 'Loading live metrics…' : 'Start ORBIT backend (:8000)'
 
-/** Slide 25 — The Confusion Matrix (Anatomy + Phase 7 Live Slot) */
-export function Slide25ConfusionMatrix({ live }: { live?: ConfusionMatrixSlotData } = {}) {
-  const matrix = live?.matrix ?? null
+  const alsCovPct = als ? als.catalog_coverage * 100 : 0
+  const popCovPct = pop ? pop.catalog_coverage * 100 : 0
 
   return (
     <SlideLayout>
       <SplitLayout
         ratio="5/7"
         left={
-          <div className="flex flex-col gap-[2.2cqh]">
+          <div className="flex flex-col gap-[2cqh]">
             <ChapterHeader
-              eyebrow="CHAPTER 06 · ERROR ANATOMY"
+              eyebrow="CHAPTER 06 · DISCOVERY VS. ECHO CHAMBER"
               title={
                 <>
-                  The <span className="text-[#A78BFA]">Confusion Matrix</span>
+                  Catalog Coverage &amp; <span className="text-[#A78BFA]">Popularity Bias</span>
                 </>
               }
-              subtitle="Instead of collapsing performance into a single number, a confusion matrix reveals exactly which classes the model confuses."
+              subtitle="A popularity baseline repeats the same handful of bestsellers to everyone. True personalization explores the long tail."
               compact
             />
 
-            <div className="flex flex-col gap-2">
-              {[
-                {
-                  badge: 'DIAGONAL (TP)',
-                  color: '#22D3EE',
-                  text: 'True Positives — predicted species matches the actual ground-truth species.',
-                },
-                {
-                  badge: 'OFF-DIAGONAL ROW (FN)',
-                  color: '#A78BFA',
-                  text: 'False Negatives — true members of a row class missed and assigned elsewhere.',
-                },
-                {
-                  badge: 'OFF-DIAGONAL COL (FP)',
-                  color: '#858A98',
-                  text: 'False Positives — other species mistakenly predicted into this column.',
-                },
-              ].map((item) => (
-                <div
-                  key={item.badge}
-                  className="rounded-sm border border-[#252834] bg-[#11131A]/85 px-3.5 py-2.5"
-                >
-                  <div
-                    className="font-mono text-[clamp(9.5px,0.78cqw,11px)] tracking-[0.16em]"
-                    style={{ color: item.color }}
-                  >
-                    {item.badge}
-                  </div>
-                  <p className="mt-1 font-sans text-[clamp(11px,0.92cqw,13px)] leading-snug text-[#858A98]">
-                    {item.text}
-                  </p>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 gap-2">
+              <MetricCard
+                label="ALS Catalog Coverage@10"
+                value={als ? `${alsCovPct.toFixed(1)}%` : null}
+                note={
+                  als && catalogSize
+                    ? `${als.recommended_unique_items.toLocaleString()} of ${catalogSize.toLocaleString()} SKUs surfaced`
+                    : undefined
+                }
+                accent="secondary"
+                slotLabel={slotLabel}
+                compact
+              />
+              <MetricCard
+                label="Popularity Baseline Coverage@10"
+                value={pop ? `${popCovPct.toFixed(1)}%` : null}
+                note={
+                  pop && catalogSize
+                    ? `Only ${pop.recommended_unique_items.toLocaleString()} bestsellers recommended`
+                    : undefined
+                }
+                accent="neutral"
+                slotLabel={slotLabel}
+                compact
+              />
+              <MetricCard
+                label="Avg Recommended Popularity Rank"
+                value={als ? `#${als.avg_recommended_popularity_rank.toFixed(0)}` : null}
+                note={
+                  pop
+                    ? `vs. #${pop.avg_recommended_popularity_rank.toFixed(1)} for Popularity (higher = deeper long-tail)`
+                    : undefined
+                }
+                accent="primary"
+                slotLabel={slotLabel}
+                compact
+              />
             </div>
           </div>
         }
         right={
           <DiagramFrame
             figure="FIG 06.B"
-            title="3×3 IRIS MATRIX"
-            meta={matrix ? 'HELD-OUT TEST (N = 30)' : 'PHASE 7 LIVE SLOT'}
-            caption="Rows represent true labels (10 held-out samples each); columns represent KNN predictions."
+            title="CATALOG REACH & LONG-TAIL DISCOVERY"
+            meta={metrics ? `LIFT: ${metrics.lift_vs_popularity_at_10.catalog_coverage.toFixed(1)}× COVERAGE` : 'LIVE METRICS'}
+            caption="Higher catalog coverage means shoppers discover relevant specialty gifts across the store instead of identical bestsellers."
             className="h-full"
-            bodyClassName="flex-col items-stretch justify-center px-3"
+            bodyClassName="flex-col items-stretch justify-center gap-5 px-3"
           >
-            <div className="flex w-full flex-col gap-2">
-              {/* Predicted header */}
-              <div className="grid grid-cols-12 items-center gap-2">
-                <div className="col-span-3" />
-                <div className="col-span-9 text-center font-mono text-[clamp(9.5px,0.78cqw,11px)] tracking-[0.2em] text-[#22D3EE] uppercase">
-                  PREDICTED CLASS →
+            {/* Coverage comparison bars */}
+            <div className="flex flex-col gap-3">
+              <div>
+                <div className="mb-1.5 flex items-center justify-between font-mono text-[clamp(9.5px,0.8cqw,11.5px)]">
+                  <span className="text-[#22D3EE]">IMPLICIT ALS (PERSONALIZED)</span>
+                  <span className="text-[#F5F5F7] tabular-nums">
+                    {als ? `${alsCovPct.toFixed(2)}% · ${als.recommended_unique_items.toLocaleString()} SKUs` : '— —'}
+                  </span>
+                </div>
+                <div className="h-9 w-full overflow-hidden rounded-sm border border-[#252834] bg-[#08090D]">
+                  <motion.div
+                    initial={reduced ? false : { scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: 0.6 }}
+                    style={{
+                      width: `${Math.min(100, Math.max(als ? 4 : 0, alsCovPct * 2))}%`,
+                      transformOrigin: 'left center',
+                    }}
+                    className="h-full border-r-2 border-[#22D3EE] bg-[#22D3EE]/25"
+                  />
                 </div>
               </div>
 
-              <div className="grid grid-cols-12 items-center gap-2 font-mono text-[clamp(9.5px,0.78cqw,11px)] text-[#858A98]">
-                <div className="col-span-3 text-right pr-2 text-[#A78BFA]">ACTUAL ↓</div>
-                {IRIS_SPECIES.map((sp) => (
-                  <div key={sp.id} className="col-span-3 text-center">
-                    <span className="inline-flex items-center gap-1.5">
-                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: sp.color }} />
-                      <span className="text-[#F5F5F7]">{sp.short}</span>
-                    </span>
-                  </div>
-                ))}
+              <div>
+                <div className="mb-1.5 flex items-center justify-between font-mono text-[clamp(9.5px,0.8cqw,11.5px)]">
+                  <span className="text-[#858A98]">POPULARITY BASELINE (NON-PERSONALIZED)</span>
+                  <span className="text-[#858A98] tabular-nums">
+                    {pop ? `${popCovPct.toFixed(2)}% · ${pop.recommended_unique_items.toLocaleString()} SKUs` : '— —'}
+                  </span>
+                </div>
+                <div className="h-9 w-full overflow-hidden rounded-sm border border-[#252834] bg-[#08090D]">
+                  <motion.div
+                    initial={reduced ? false : { scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: 0.5, delay: 0.15 }}
+                    style={{
+                      width: `${Math.min(100, Math.max(pop ? 2 : 0, popCovPct * 2))}%`,
+                      transformOrigin: 'left center',
+                    }}
+                    className="h-full border-r-2 border-[#858A98] bg-[#858A98]/25"
+                  />
+                </div>
               </div>
-
-              {/* 3x3 grid */}
-              {IRIS_SPECIES.map((rowSp, r) => (
-                <div key={rowSp.id} className="grid grid-cols-12 items-stretch gap-2">
-                  <div className="col-span-3 flex items-center justify-end gap-1.5 pr-2 font-mono text-[clamp(10px,0.84cqw,12px)] text-[#F5F5F7]">
-                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: rowSp.color }} />
-                    <span>{rowSp.short}</span>
-                  </div>
-
-                  {IRIS_SPECIES.map((colSp, c) => {
-                    const isDiag = r === c
-                    const cellVal = matrix ? matrix[r]?.[c] : null
-                    return (
-                      <div
-                        key={colSp.id}
-                        className={`col-span-3 flex h-[9.5cqh] flex-col items-center justify-center rounded-sm border ${
-                          isDiag
-                            ? 'border-[#22D3EE]/55 bg-[#22D3EE]/10'
-                            : 'border-[#252834] bg-[#08090D]'
-                        }`}
-                      >
-                        <span
-                          className={`font-mono text-[clamp(18px,1.8cqw,28px)] font-medium tabular-nums ${
-                            cellVal === null
-                              ? 'text-[#858A98]/55'
-                              : isDiag
-                                ? 'text-[#22D3EE]'
-                                : cellVal > 0
-                                  ? 'text-[#A78BFA]'
-                                  : 'text-[#858A98]/50'
-                          }`}
-                        >
-                          {cellVal === null ? '—' : cellVal}
-                        </span>
-                        <span className="mt-0.5 font-mono text-[clamp(8.5px,0.68cqw,10px)] tracking-[0.14em] text-[#858A98]">
-                          {isDiag ? 'TP (MATCH)' : 'FP / FN'}
-                        </span>
-                      </div>
-                    )
-                  })}
-                </div>
-              ))}
-
-              {!matrix && (
-                <div className="mt-1 text-center font-mono text-[clamp(9px,0.74cqw,10.5px)] tracking-[0.12em] text-[#22D3EE]/85">
-                  SLOT READY · LIVE METRICS CONNECT IN PHASE 7 (GET /api/model/evaluate)
-                </div>
-              )}
             </div>
+
+            {/* Long-tail distribution visual */}
+            <svg viewBox="0 0 460 120" className="w-full" preserveAspectRatio="xMidYMid meet">
+              <line x1="24" y1="96" x2="436" y2="96" stroke="#252834" />
+              <path
+                d="M 28 22 C 62 24, 92 66, 152 78 C 232 90, 326 92, 432 94"
+                fill="none"
+                stroke="#858A98"
+                strokeWidth="1.5"
+              />
+              {/* Head zone (Popularity only) */}
+              <rect x="28" y="16" width="44" height="80" fill="#858A98" fillOpacity="0.14" stroke="#858A98" strokeDasharray="3 3" />
+              <text x="50" y="12" textAnchor="middle" fill="#858A98" fontSize="8.5" fontFamily="JetBrains Mono">
+                POP HEAD
+              </text>
+              {/* ALS discovery zone */}
+              <rect x="28" y="16" width="218" height="80" fill="#22D3EE" fillOpacity="0.08" stroke="#22D3EE" strokeDasharray="4 3" />
+              <text x="158" y="42" textAnchor="middle" fill="#22D3EE" fontSize="9.5" fontFamily="JetBrains Mono">
+                ALS PERSONALIZED LONG-TAIL REACH
+              </text>
+              <text x="230" y="112" textAnchor="middle" fill="#858A98" fontSize="9" fontFamily="JetBrains Mono">
+                CATALOG PRODUCTS ORDERED BY POPULARITY (HEAD → TAIL)
+              </text>
+            </svg>
           </DiagramFrame>
         }
       />

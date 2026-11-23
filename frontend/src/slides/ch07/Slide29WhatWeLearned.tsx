@@ -5,42 +5,42 @@ import { SlideLayout } from '../../presentation/SlideLayout'
 const TAKEAWAYS = [
   {
     num: '01',
-    stage: 'REPRESENTATION',
-    title: 'Learning starts with data geometry',
-    desc: 'Features turn observations into coordinates in ℝⁿ where similarity becomes measurable.',
+    stage: 'IMPLICIT SIGNAL',
+    title: 'Purchases are confidence, not star ratings',
+    desc: 'Cleaning UCI retail logs and applying log(1 + purchases) tames wholesale spikes without inventing ratings.',
     accent: '#22D3EE',
   },
   {
     num: '02',
-    stage: 'DISCIPLINE',
-    title: 'Split and scale without leakage',
-    desc: 'Stratified 80/20 splits and train-only StandardScaler fitting keep evaluation honest.',
+    stage: 'FACTORIZATION',
+    title: 'Sparse matrices compress into latent taste',
+    desc: 'Approximating R ≈ U × Vᵀ discovers shared structure across 3,751 shoppers and 3,049 gift items.',
     accent: '#A78BFA',
   },
   {
     num: '03',
-    stage: 'MECHANISM',
-    title: 'KNN classifies by local proximity',
-    desc: 'No opaque weights — just distance metrics, K nearest neighbors, and transparent voting.',
+    stage: 'OPTIMIZATION',
+    title: 'ALS alternates closed-form solves',
+    desc: 'Fixing V to solve U, then fixing U to solve V with L₂ regularization makes implicit learning fast and stable.',
     accent: '#22D3EE',
   },
   {
     num: '04',
-    stage: 'TRADEOFF',
-    title: 'Complexity balances bias and variance',
-    desc: 'Small K memorizes noise; large K oversmooths; 5-fold CV finds the balanced sweet spot.',
+    stage: 'EVALUATION',
+    title: 'Chronological ranking beats popularity',
+    desc: 'Precision@K, Recall@K, MAP@K, NDCG@K, and Coverage prove real personalized lift on unseen future orders.',
     accent: '#A78BFA',
   },
   {
     num: '05',
-    stage: 'EVALUATION',
-    title: 'Metrics expose how a model fails',
-    desc: 'Macro precision, recall, F₁, and the confusion matrix reveal errors beyond accuracy.',
+    stage: 'HUMILITY',
+    title: 'Design around collaborative limits',
+    desc: 'Cold-start users, sparsity, popularity skew, and shifting intent demand hybrid fallbacks and continuous monitoring.',
     accent: '#F5F5F7',
   },
 ] as const
 
-/** Slide 29 — What We Learned (5-Point Arc Synthesis) */
+/** Slide 29 — What We Learned (ORBIT 5-Point Synthesis) */
 export function Slide29WhatWeLearned() {
   const reduced = useReducedMotion()
 
@@ -54,12 +54,11 @@ export function Slide29WhatWeLearned() {
               What we <span className="text-[#A78BFA]">learned.</span>
             </>
           }
-          subtitle="Five foundational principles that scale from KNN to every modern machine learning system."
+          subtitle="Five engineering principles connecting historical checkout logs to responsible personalized recommendations."
           compact
         />
 
         <div className="relative grid min-h-0 flex-1 grid-rows-5 gap-[1cqh] pl-6">
-          {/* Vertical progression rail */}
           <span
             className="pointer-events-none absolute top-3 bottom-3 left-2 w-px bg-gradient-to-b from-[#22D3EE] via-[#A78BFA] to-[#252834]"
             aria-hidden
@@ -73,7 +72,6 @@ export function Slide29WhatWeLearned() {
               transition={{ duration: 0.35, delay: 0.08 + idx * 0.07 }}
               className="relative flex min-h-0 items-center justify-between gap-3 rounded-sm border border-[#252834] bg-[#11131A]/85 px-4"
             >
-              {/* Rail node */}
               <span
                 className="pointer-events-none absolute -left-[20px] h-2.5 w-2.5 rounded-full border border-[#08090D]"
                 style={{ backgroundColor: item.accent }}

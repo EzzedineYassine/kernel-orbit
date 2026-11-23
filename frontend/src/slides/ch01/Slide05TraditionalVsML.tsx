@@ -114,13 +114,13 @@ export function Slide05TraditionalVsML() {
               transition={{ duration: 0.4, delay: 0.3 }}
             >
               <rect x="28" y="212" width="180" height="44" rx="3" fill="#08090D" stroke="#22D3EE" strokeOpacity="0.6" />
-              <text x="118" y="239" textAnchor="middle" fill="#22D3EE" fontSize="13" fontFamily="Space Grotesk" fontWeight="600">
-                DATA (Features)
+              <text x="118" y="239" textAnchor="middle" fill="#22D3EE" fontSize="12.5" fontFamily="Space Grotesk" fontWeight="600">
+                DATA (Customers &amp; Items)
               </text>
 
               <rect x="28" y="264" width="180" height="44" rx="3" fill="#08090D" stroke="#A78BFA" strokeOpacity="0.7" />
-              <text x="118" y="291" textAnchor="middle" fill="#A78BFA" fontSize="13" fontFamily="Space Grotesk" fontWeight="600">
-                ANSWERS (Labels)
+              <text x="118" y="291" textAnchor="middle" fill="#A78BFA" fontSize="12.5" fontFamily="Space Grotesk" fontWeight="600">
+                HISTORY (Interactions)
               </text>
             </motion.g>
 

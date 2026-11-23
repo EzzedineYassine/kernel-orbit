@@ -18,12 +18,11 @@ export function Slide07AlgorithmVsModel() {
               <span className="text-[#22D3EE]">Model</span>
             </>
           }
-          subtitle="People often conflate the two. One is the learning procedure; the other is the fitted artifact produced from data."
+          subtitle="One is the optimization recipe before seeing transactions; the other is the trained factor artifact storing learned taste."
           compact
         />
 
         <div className="grid min-h-0 flex-1 grid-cols-12 gap-[2cqw]">
-          {/* Algorithm card */}
           <motion.div
             initial={reduced ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -38,43 +37,38 @@ export function Slide07AlgorithmVsModel() {
                 Algorithm
               </h2>
               <p className="mt-2 font-sans text-[clamp(11.5px,1cqw,14px)] leading-relaxed text-[#858A98]">
-                The general mathematical recipe that defines how to learn from data — before it has ever seen a single row.
+                Alternating Least Squares (ALS) — the iterative math procedure that solves regularized least-squares steps for latent factors.
               </p>
             </div>
 
-            <div className="mt-3 rounded-sm border border-[#252834] bg-[#08090D] p-3 font-mono text-[clamp(10px,0.84cqw,12px)] text-[#A78BFA]">
+            <div className="mt-3 rounded-sm border border-[#252834] bg-[#08090D] p-3 font-mono text-[clamp(9.5px,0.8cqw,11.5px)] text-[#A78BFA]">
               <div className="text-[#858A98]"># Unfitted specification</div>
-              <div>KNeighborsClassifier(k=5)</div>
-              <div className="mt-1 text-[#858A98]">State: no data memorized</div>
+              <div>AlternatingLeastSquares(k=32)</div>
+              <div className="mt-1 text-[#858A98]">State: no customer or item factors</div>
             </div>
           </motion.div>
 
-          {/* Transformation SVG center */}
           <div className="col-span-4 flex min-h-0 flex-col">
-            <DiagramFrame
-              figure="FIG 02.B"
-              title="TRAINING TRANSFORMATION"
-              className="h-full"
-            >
+            <DiagramFrame figure="FIG 02.B" title="TRAINING TRANSFORMATION" className="h-full">
               <svg viewBox="0 0 320 260" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
-                <rect x="64" y="18" width="192" height="48" rx="3" fill="#08090D" stroke="#A78BFA" strokeOpacity="0.7" />
-                <text x="160" y="40" textAnchor="middle" fill="#A78BFA" fontSize="10.5" fontFamily="JetBrains Mono">
-                  ALGORITHM
+                <rect x="44" y="16" width="232" height="50" rx="3" fill="#08090D" stroke="#A78BFA" strokeOpacity="0.7" />
+                <text x="160" y="38" textAnchor="middle" fill="#A78BFA" fontSize="10.5" fontFamily="JetBrains Mono">
+                  ALS ALGORITHM
                 </text>
-                <text x="160" y="56" textAnchor="middle" fill="#858A98" fontSize="9.5" fontFamily="Inter">
-                  Learning rule + hyperparameters
+                <text x="160" y="54" textAnchor="middle" fill="#858A98" fontSize="9.5" fontFamily="Inter">
+                  factors · iterations · λ · α
                 </text>
 
-                <text x="160" y="88" textAnchor="middle" fill="#858A98" fontSize="16" fontFamily="JetBrains Mono">
+                <text x="160" y="86" textAnchor="middle" fill="#858A98" fontSize="16" fontFamily="JetBrains Mono">
                   +
                 </text>
 
-                <rect x="64" y="98" width="192" height="48" rx="3" fill="#08090D" stroke="#252834" />
-                <text x="160" y="120" textAnchor="middle" fill="#F5F5F7" fontSize="10.5" fontFamily="JetBrains Mono">
-                  TRAINING DATA (X_train, y_train)
+                <rect x="44" y="96" width="232" height="50" rx="3" fill="#08090D" stroke="#252834" />
+                <text x="160" y="118" textAnchor="middle" fill="#F5F5F7" fontSize="10.5" fontFamily="JetBrains Mono">
+                  SPARSE MATRIX R_train
                 </text>
-                <text x="160" y="136" textAnchor="middle" fill="#858A98" fontSize="9.5" fontFamily="Inter">
-                  120 labeled Iris observations
+                <text x="160" y="134" textAnchor="middle" fill="#858A98" fontSize="9.5" fontFamily="Inter">
+                  3,751 customers × 3,049 products
                 </text>
 
                 <motion.line
@@ -93,18 +87,17 @@ export function Slide07AlgorithmVsModel() {
                   .fit()
                 </text>
 
-                <rect x="44" y="196" width="232" height="50" rx="3" fill="#22D3EE" fillOpacity="0.1" stroke="#22D3EE" strokeWidth="1.5" />
+                <rect x="34" y="196" width="252" height="52" rx="3" fill="#22D3EE" fillOpacity="0.1" stroke="#22D3EE" strokeWidth="1.5" />
                 <text x="160" y="218" textAnchor="middle" fill="#22D3EE" fontSize="11" fontFamily="JetBrains Mono" fontWeight="600">
-                  FITTED MODEL ARTIFACT
+                  FITTED FACTOR MATRICES (U, V)
                 </text>
-                <text x="160" y="235" textAnchor="middle" fill="#F5F5F7" fontSize="9.5" fontFamily="Inter">
-                  Ready for .predict(x_new)
+                <text x="160" y="236" textAnchor="middle" fill="#F5F5F7" fontSize="9.5" fontFamily="Inter">
+                  Ready for .recommend(customer_id)
                 </text>
               </svg>
             </DiagramFrame>
           </div>
 
-          {/* Model card */}
           <motion.div
             initial={reduced ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -119,14 +112,14 @@ export function Slide07AlgorithmVsModel() {
                 Model
               </h2>
               <p className="mt-2 font-sans text-[clamp(11.5px,1cqw,14px)] leading-relaxed text-[#858A98]">
-                The concrete state produced after running the algorithm on training data — containing fitted scalers, parameters, or indexed examples.
+                The concrete factor matrices U (customer embeddings) and V (product embeddings) learned from historical gift purchases.
               </p>
             </div>
 
-            <div className="mt-3 rounded-sm border border-[#22D3EE]/35 bg-[#08090D] p-3 font-mono text-[clamp(10px,0.84cqw,12px)] text-[#22D3EE]">
-              <div className="text-[#858A98]"># Fitted pipeline artifact</div>
-              <div>Pipeline(StandardScaler → KNN)</div>
-              <div className="mt-1 text-[#F5F5F7]">State: μ, σ + 120 scaled points</div>
+            <div className="mt-3 rounded-sm border border-[#22D3EE]/35 bg-[#08090D] p-3 font-mono text-[clamp(9.5px,0.8cqw,11.5px)] text-[#22D3EE]">
+              <div className="text-[#858A98]"># Learned representations in RAM</div>
+              <div>U: (3751, 32) · V: (3049, 32)</div>
+              <div className="mt-1 text-[#F5F5F7]">Fast dot-product inference</div>
             </div>
           </motion.div>
         </div>

@@ -118,10 +118,10 @@ export function Slide01Awakening() {
             initial={reduced ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="mb-[2.8cqh] flex items-center gap-3 font-mono text-[clamp(10px,0.85cqw,12px)] tracking-[0.3em] text-[#858A98] uppercase"
+            className="mb-[2.4cqh] flex items-center gap-3 font-mono text-[clamp(10px,0.85cqw,12px)] tracking-[0.3em] text-[#858A98] uppercase"
           >
             <span className="h-px w-10 bg-[#A78BFA]" />
-            <span>CHAPTER 01 · THE AWAKENING</span>
+            <span>KERNEL / ORBIT · CHAPTER 01</span>
             <span className="h-px w-10 bg-[#22D3EE]" />
           </motion.div>
 
@@ -129,7 +129,7 @@ export function Slide01Awakening() {
             initial={reduced ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display text-[clamp(38px,5.5cqw,82px)] leading-[0.98] font-bold tracking-[-0.03em] text-[#F5F5F7]"
+            className="font-display text-[clamp(38px,5.4cqw,80px)] leading-[0.98] font-bold tracking-[-0.03em] text-[#F5F5F7]"
           >
             MACHINES CAN{' '}
             <span className="text-[#A78BFA]">LEARN.</span>
@@ -139,27 +139,27 @@ export function Slide01Awakening() {
             initial={reduced ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.28 }}
-            className="mt-[2.8cqh] font-sans text-[clamp(15px,1.55cqw,22px)] font-normal tracking-[-0.01em] text-[#858A98]"
+            className="mt-[2.4cqh] font-sans text-[clamp(15px,1.5cqw,22px)] font-normal tracking-[-0.01em] text-[#858A98]"
           >
-            But how does a machine actually learn?
+            Discover what customers will want next — inside the recommendation model.
           </motion.p>
 
           <motion.div
             initial={reduced ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.46 }}
-            className="mt-[5cqh] flex items-center gap-6 rounded-sm border border-[#252834] bg-[#11131A]/80 px-5 py-2.5 font-mono text-[clamp(10px,0.82cqw,11.5px)] tracking-[0.16em] text-[#858A98]"
+            className="mt-[4.6cqh] flex items-center gap-5 rounded-sm border border-[#252834] bg-[#11131A]/80 px-5 py-2.5 font-mono text-[clamp(10px,0.82cqw,11.5px)] tracking-[0.15em] text-[#858A98]"
           >
             <span>
-              SYSTEM <span className="text-[#F5F5F7]">KERNEL</span>
+              PROJECT <span className="text-[#F5F5F7]">ORBIT</span>
             </span>
             <span className="h-3 w-px bg-[#252834]" />
             <span>
-              MODEL <span className="text-[#22D3EE]">K-NEAREST NEIGHBORS</span>
+              MODEL <span className="text-[#22D3EE]">IMPLICIT ALS</span>
             </span>
             <span className="h-3 w-px bg-[#252834]" />
             <span>
-              DATA <span className="text-[#A78BFA]">IRIS (150)</span>
+              DATA <span className="text-[#A78BFA]">UCI RETAIL (541,909)</span>
             </span>
           </motion.div>
         </div>
