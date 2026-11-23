@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.knn_app import knn_app as app
 from app.ml.dataset import SPECIES_NAMES, get_iris_dataset
 from app.ml.model_service import model_service
 

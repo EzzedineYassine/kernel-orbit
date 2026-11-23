@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react'
-import { createPlaceholderSlide } from '../slides/EnginePlaceholderSlide'
+import { OrbitLaboratory } from '../laboratory/OrbitLaboratory'
 import { Slide01Awakening } from '../slides/ch01/Slide01Awakening'
 import { Slide02CentralQuestion } from '../slides/ch01/Slide02CentralQuestion'
 import { Slide03ArtificialIntelligence } from '../slides/ch01/Slide03ArtificialIntelligence'
@@ -51,7 +51,7 @@ interface SlideSpec {
   title: string
   subtitle?: string
   isInteractive?: boolean
-  component?: ComponentType
+  component: ComponentType
 }
 
 const slideSpecs: readonly SlideSpec[] = [
@@ -84,8 +84,8 @@ const slideSpecs: readonly SlideSpec[] = [
   { id: 's20', chapterId: 'ch04', title: 'How Alternating Least Squares Works', component: Slide20HowALSWorks },
   { id: 's21', chapterId: 'ch04', title: 'From Factors to Recommendations', component: Slide21FactorsToRecommendations },
 
-  // Ch 05 — The ORBIT Laboratory (22 — wired in Phase D)
-  { id: 's22', chapterId: 'ch05', title: 'The ORBIT Laboratory', subtitle: 'Interactive ALS recommendation engine', isInteractive: true },
+  // Ch 05 — The ORBIT Laboratory (22 — live interactive ALS lab)
+  { id: 's22', chapterId: 'ch05', title: 'The ORBIT Laboratory', subtitle: 'Interactive ALS recommendation engine', isInteractive: true, component: OrbitLaboratory },
 
   // Ch 06 — Evaluation (23–27)
   { id: 's23', chapterId: 'ch06', title: 'Evaluating Recommendations', component: Slide23WhatMakesModelGood },
@@ -110,14 +110,10 @@ export function getChapter(id: ChapterId): ChapterMeta {
   return chapter
 }
 
-export const slides: readonly SlideMeta[] = slideSpecs.map((spec, index) => {
-  const { component, ...rest } = spec
-  const meta = { ...rest, index }
-  return {
-    ...meta,
-    component: component ?? createPlaceholderSlide(meta, getChapter(spec.chapterId), slideSpecs.length),
-  }
-})
+export const slides: readonly SlideMeta[] = slideSpecs.map((spec, index) => ({
+  ...spec,
+  index,
+}))
 
 /** Zero-based index of the first slide of each chapter. */
 export const chapterStartIndex: Readonly<Record<ChapterId, number>> = chapters.reduce(
