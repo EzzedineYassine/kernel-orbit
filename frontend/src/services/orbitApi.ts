@@ -12,7 +12,9 @@ import type {
   SimilarProductsResponse,
 } from '../types/orbit'
 
-const API_BASE = (import.meta.env.VITE_ORBIT_API_URL as string | undefined)?.replace(/\/$/, '') || 'http://127.0.0.1:8000'
+const API_BASE =
+  (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim().replace(/\/+$/, '') ||
+  'http://127.0.0.1:8000'
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {

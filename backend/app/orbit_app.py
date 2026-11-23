@@ -1,7 +1,6 @@
-"""Standalone KERNEL / ORBIT FastAPI application (Implicit ALS backend).
+"""KERNEL / ORBIT FastAPI application factory (Implicit ALS backend).
 
-Preserves the original Phase 4 KNN application in `app/main.py` intact until
-Phase E cutover after independent verification.
+Preserves the original Phase 4 KNN reference app separately in `app/knn_app.py`.
 """
 
 from __future__ import annotations
@@ -27,7 +26,11 @@ def _resolve_cors_origins() -> list[str]:
     env_value = os.getenv("KERNEL_CORS_ORIGINS", "").strip()
     if not env_value:
         return DEFAULT_CORS_ORIGINS
-    origins = [origin.strip() for origin in env_value.split(",") if origin.strip()]
+    origins = [
+        origin.strip().rstrip("/")
+        for origin in env_value.split(",")
+        if origin.strip().rstrip("/")
+    ]
     return origins or DEFAULT_CORS_ORIGINS
 
 

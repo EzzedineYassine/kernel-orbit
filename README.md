@@ -71,7 +71,11 @@ cd frontend
 npm install
 npx vite --port 5179
 ```
-Open **http://localhost:5179/** in a modern desktop browser. To point the frontend to a custom backend URL, set `VITE_ORBIT_API_URL` in `frontend/.env`.
+Open **http://localhost:5179/** in a modern desktop browser. To point the frontend to a custom or deployed backend URL, set `VITE_API_BASE_URL` in `frontend/.env` (or Vercel Environment Variables).
+
+## Production Deployment (Vercel + Docker/Render/Railway)
+- **Backend (`backend/Dockerfile`):** Deploy `backend/` as a Docker web service on Render or Railway. Set `KERNEL_CORS_ORIGINS` to a comma-separated list of allowed frontend origins (e.g., `https://your-app.vercel.app`). The Docker build downloads the official UCI dataset and caches `data/online_retail_raw.parquet` for fast cold starts, binding to `0.0.0.0:${PORT:-8000}`.
+- **Frontend (`frontend/vercel.json`):** Deploy `frontend/` on Vercel (Root Directory: `frontend`) and set `VITE_API_BASE_URL` to your deployed backend URL (e.g., `https://your-backend.onrender.com`).
 
 ### 4. Presentation Controls
 - `→` / `Space` / `Enter` (when no control is focused) — Next slide
