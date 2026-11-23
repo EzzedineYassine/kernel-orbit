@@ -109,7 +109,7 @@ export function Slide03ArtificialIntelligence() {
                   </text>
                   {box.accent === '#22D3EE' && (
                     <text x={box.x + 18} y={box.y + 92} fill="#22D3EE" fontSize="9.5" fontFamily="JetBrains Mono" letterSpacing="1.4">
-                      FOCUS OF KERNEL →
+                      FOCUS OF ORBIT →
                     </text>
                   )}
                 </motion.g>

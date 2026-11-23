@@ -3,135 +3,109 @@ import { ChapterHeader } from '../../components/ChapterHeader'
 import { DiagramFrame } from '../../components/DiagramFrame'
 import { MathFormula } from '../../components/MathFormula'
 import { SplitLayout } from '../../components/SplitLayout'
+import { useOrbitData } from '../../hooks/useOrbitData'
 import { SlideLayout } from '../../presentation/SlideLayout'
 
-/** Slide 12 — Data Collection & Preprocessing (StandardScaler) */
+/** Slide 12 — Transaction Cleaning & Implicit Confidence Scaling */
 export function Slide12PreprocessingScaling() {
   const reduced = useReducedMotion()
+  const { summary } = useOrbitData()
+
+  const rawRows = summary ? summary.raw_rows.toLocaleString() : '541,909'
+  const cancelled = summary ? summary.cancelled_invoices_removed.toLocaleString() : '9,288'
+  const missingCust = summary ? summary.missing_customer_id_removed.toLocaleString() : '135,080'
+  const cleanRows = summary ? summary.clean_transaction_rows.toLocaleString() : '396,337'
+  const qtyMax = summary ? summary.quantity_max.toLocaleString() : '80,995'
+
+  const filters = [
+    { label: 'Raw UCI Invoice Lines', count: rawRows, pct: 100, color: '#858A98' },
+    { label: 'Remove Missing CustomerID', count: `−${missingCust}`, pct: 75, color: '#A78BFA' },
+    { label: 'Remove Cancelled & Returns', count: `−${cancelled}`, pct: 73, color: '#A78BFA' },
+    { label: 'Clean Merchandise Rows', count: cleanRows, pct: 73, color: '#22D3EE' },
+  ] as const
 
   return (
     <SlideLayout>
       <SplitLayout
         ratio="5/7"
         left={
-          <div className="flex flex-col gap-[2.2cqh]">
+          <div className="flex flex-col gap-[2cqh]">
             <ChapterHeader
-              eyebrow="CHAPTER 03 · PREPROCESSING"
+              eyebrow="CHAPTER 03 · DATA PREPROCESSING"
               title={
                 <>
-                  Normalize before you <span className="text-[#22D3EE]">measure.</span>
+                  Clean logs &amp; dampen <span className="text-[#22D3EE]">wholesale outliers.</span>
                 </>
               }
-              subtitle="Raw measurements live on unequal scales. Without standardization, wider-range features dominate distance calculations."
+              subtitle="Raw transaction logs contain cancelled invoices, missing IDs, postage fees, and massive wholesale orders."
               compact
             />
 
             <MathFormula
-              label="StandardScaler (Z-Score)"
+              label="Implicit Interaction Confidence"
               compact
               formula={
-                <span className="flex items-center gap-3">
-                  <span className="text-[#22D3EE]">z</span>
-                  <span className="text-[#858A98]">=</span>
-                  <span className="inline-flex flex-col items-center leading-none">
-                    <span className="border-b border-[#858A98] px-2 pb-1 text-[0.88em]">
-                      x − <span className="text-[#A78BFA]">μ</span>
-                      <sub className="text-[0.65em] text-[#858A98]">train</sub>
-                    </span>
-                    <span className="pt-1 text-[0.88em]">
-                      <span className="text-[#A78BFA]">σ</span>
-                      <sub className="text-[0.65em] text-[#858A98]">train</sub>
-                    </span>
-                  </span>
-                </span>
+                <div className="flex flex-col gap-1 text-[0.8em]">
+                  <div>
+                    <span className="text-[#22D3EE]">r</span>
+                    <sub className="text-[0.65em] text-[#858A98]">ui</sub>
+                    <span className="text-[#858A98]"> = </span>
+                    ln(1 + purchases<sub className="text-[0.65em] text-[#858A98]">ui</sub>)
+                  </div>
+                  <div>
+                    <span className="text-[#A78BFA]">C</span>
+                    <sub className="text-[0.65em] text-[#858A98]">ui</sub>
+                    <span className="text-[#858A98]"> = 1 + </span>
+                    <span className="text-[#A78BFA]">α</span> ·{' '}
+                    <span className="text-[#22D3EE]">r</span>
+                    <sub className="text-[0.65em] text-[#858A98]">ui</sub>
+                  </div>
+                </div>
               }
               annotations={[
-                { symbol: 'μ = 0', meaning: 'Zero-centered mean', accent: 'primary' },
-                { symbol: 'σ = 1', meaning: 'Unit variance per feature', accent: 'secondary' },
+                { symbol: 'max qty = ' + qtyMax, meaning: 'Wholesale spike damped by invoice log', accent: 'primary' },
+                { symbol: 'k ≥ 5', meaning: 'Min user & product support on train split', accent: 'secondary' },
               ]}
             />
-
-            <p className="font-sans text-[clamp(11.5px,0.96cqw,13.5px)] leading-relaxed text-[#858A98]">
-              In Iris, petal length spans <span className="font-mono text-[#F5F5F7]">1.0–6.9 cm</span> (range 5.9), while petal width spans{' '}
-              <span className="font-mono text-[#F5F5F7]">0.1–2.5 cm</span> (range 2.4). Standardization gives both features equal geometric voice.
-            </p>
           </div>
         }
         right={
           <DiagramFrame
             figure="FIG 03.B"
-            title="SCALE DISTORTION VS. STANDARDIZED SPACE"
-            meta="BEFORE / AFTER"
-            caption="Unscaled axes stretch circles into ellipses, biasing nearest-neighbor distances toward the larger-range axis."
+            title="TRANSACTION CLEANING FUNNEL"
+            meta="UCI RETAIL AUDIT"
+            caption="Using log(1 + distinct purchase invoices) prevents a single 80,995-unit wholesale order from hijacking latent factors."
             className="h-full"
+            bodyClassName="flex-col items-stretch justify-center gap-3.5 px-2"
           >
-            <svg viewBox="0 0 600 340" className="h-full w-full" preserveAspectRatio="xMidYMid meet">
-              {/* Left: Raw distorted scale */}
-              <rect x="16" y="20" width="262" height="300" rx="3" fill="#08090D" stroke="#252834" />
-              <text x="32" y="44" fill="#858A98" fontSize="10" fontFamily="JetBrains Mono" letterSpacing="1.5">
-                RAW UNITS (DISTORTED)
-              </text>
+            {filters.map((step, idx) => (
+              <div key={step.label} className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between font-mono text-[clamp(9.5px,0.8cqw,11.5px)]">
+                  <span className="text-[#F5F5F7]">{step.label}</span>
+                  <span style={{ color: step.color }} className="tabular-nums">
+                    {step.count}
+                  </span>
+                </div>
+                <div className="h-6 w-full overflow-hidden rounded-sm border border-[#252834] bg-[#08090D]">
+                  <motion.div
+                    initial={reduced ? false : { scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: 0.45, delay: 0.1 + idx * 0.08 }}
+                    style={{
+                      width: `${step.pct}%`,
+                      backgroundColor: `${step.color}28`,
+                      borderRight: `2px solid ${step.color}`,
+                      transformOrigin: 'left center',
+                    }}
+                    className="h-full"
+                  />
+                </div>
+              </div>
+            ))}
 
-              <line x1="44" y1="268" x2="258" y2="268" stroke="#252834" />
-              <line x1="44" y1="74" x2="44" y2="268" stroke="#252834" />
-
-              {/* Stretched ellipse */}
-              <motion.ellipse
-                cx="150"
-                cy="176"
-                rx="88"
-                ry="26"
-                fill="#A78BFA"
-                fillOpacity="0.1"
-                stroke="#A78BFA"
-                strokeWidth="1.5"
-                strokeDasharray="4 4"
-                initial={reduced ? false : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.45, delay: 0.15 }}
-              />
-              {[[82, 182], [116, 174], [150, 176], [190, 172], [220, 180]].map(([cx, cy], i) => (
-                <circle key={`r-${i}`} cx={cx} cy={cy} r="4.2" fill={i === 2 ? '#F5F5F7' : '#A78BFA'} />
-              ))}
-              <text x="150" y="294" textAnchor="middle" fill="#858A98" fontSize="9.5" fontFamily="JetBrains Mono">
-                X₁ RANGE: 5.9 cm (DOMINATES)
-              </text>
-
-              {/* Arrow */}
-              <line x1="286" y1="170" x2="314" y2="170" stroke="#22D3EE" strokeWidth="1.5" />
-              <polygon points="314,165 324,170 314,175" fill="#22D3EE" />
-
-              {/* Right: Standardized isotropic */}
-              <rect x="326" y="20" width="258" height="300" rx="3" fill="#08090D" stroke="#22D3EE" strokeOpacity="0.6" />
-              <text x="342" y="44" fill="#22D3EE" fontSize="10" fontFamily="JetBrains Mono" letterSpacing="1.5">
-                STANDARDIZED (μ=0, σ=1)
-              </text>
-
-              {/* Centered crosshairs */}
-              <line x1="354" y1="170" x2="562" y2="170" stroke="#252834" strokeDasharray="3 3" />
-              <line x1="458" y1="68" x2="458" y2="272" stroke="#252834" strokeDasharray="3 3" />
-
-              {/* Isotropic circle */}
-              <motion.circle
-                cx="458"
-                cy="170"
-                r="66"
-                fill="#22D3EE"
-                fillOpacity="0.1"
-                stroke="#22D3EE"
-                strokeWidth="1.75"
-                initial={reduced ? false : { scale: 0.75, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              />
-              {[[424, 140], [490, 146], [458, 170], [430, 200], [486, 196]].map(([cx, cy], i) => (
-                <circle key={`s-${i}`} cx={cx} cy={cy} r="4.2" fill={i === 2 ? '#F5F5F7' : '#22D3EE'} />
-              ))}
-
-              <text x="458" y="294" textAnchor="middle" fill="#22D3EE" fontSize="9.5" fontFamily="JetBrains Mono">
-                EQUAL WEIGHT ON BOTH AXES
-              </text>
-            </svg>
+            <div className="mt-1 rounded-sm border border-[#252834] bg-[#08090D] px-3.5 py-2 font-mono text-[clamp(9px,0.75cqw,10.5px)] text-[#858A98]">
+              <span className="text-[#22D3EE]">OPERATIONAL CODES EXCLUDED:</span> POST · DOT · M · BANK CHARGES · AMAZONFEE · C2 · CRUK
+            </div>
           </DiagramFrame>
         }
       />

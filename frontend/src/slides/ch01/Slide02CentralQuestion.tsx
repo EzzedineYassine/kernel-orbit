@@ -31,8 +31,8 @@ export function Slide02CentralQuestion() {
                   The Limit of Handcrafted Logic
                 </div>
                 <p className="mt-1 font-sans text-[clamp(12px,1.05cqw,14.5px)] leading-relaxed text-[#858A98]">
-                  Real-world signals — petals, voices, pixels, medical scans — have too many edge cases for static{' '}
-                  <code className="font-mono text-[#F5F5F7]">if / else</code> trees.
+                  With thousands of customers and thousands of gift products, writing static{' '}
+                  <code className="font-mono text-[#F5F5F7]">if / else</code> merchandising rules for every shopper is impossible.
                 </p>
               </div>
               <div>
@@ -61,9 +61,9 @@ export function Slide02CentralQuestion() {
               </text>
 
               {[
-                { y: 66, text: 'if (len < 2.1 && wid < 0.7)' },
-                { y: 108, text: 'else if (len < 4.8 && hue == ...)' },
-                { y: 150, text: 'else if (noise > 0.12 && tilt)' },
+                { y: 66, text: 'if (bought_mug && month == 12)' },
+                { y: 108, text: 'else if (country == UK && ...)' },
+                { y: 150, text: 'else if (qty > 6 && gift == 1)' },
                 { y: 192, text: 'else if (edge_case_419 == true)' },
               ].map((rule, idx) => (
                 <motion.g

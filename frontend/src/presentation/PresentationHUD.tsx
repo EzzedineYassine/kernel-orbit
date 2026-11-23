@@ -63,7 +63,10 @@ export function PresentationHUD({ fullscreen }: { fullscreen: FullscreenControls
       <header className="pointer-events-auto absolute inset-x-0 top-0 flex h-14 items-center justify-between px-8">
         <div className="flex items-baseline gap-2">
           <span className="font-display text-[15px] font-semibold tracking-[0.32em] text-kernel-text">KERNEL</span>
-          <span className="font-mono text-[11px] tracking-[0.12em] text-kernel-muted">/ INSIDE THE MODEL</span>
+          <span className="font-mono text-[11px] font-medium tracking-[0.22em] text-kernel-secondary">/ ORBIT</span>
+          <span className="hidden font-mono text-[10.5px] tracking-[0.12em] text-kernel-muted sm:inline">
+            · INSIDE THE RECOMMENDATION MODEL
+          </span>
         </div>
         <div className="font-mono text-[11px] tracking-[0.18em] text-kernel-muted uppercase">
           <span className="text-kernel-primary">Chapter {pad(currentChapter.number)}</span>
