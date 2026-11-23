@@ -77,3 +77,27 @@ button:disabled {
 .kernel-accent-line {
   background-image: linear-gradient(90deg, #a78bfa 0%, #22d3ee 100%);
 }
+
+/* ── Restrained dark scrollbars inside interactive panels (Slide 22) ───── */
+[data-interactive-zone='true'] * {
+  scrollbar-width: thin;
+  scrollbar-color: #252834 transparent;
+}
+
+[data-interactive-zone='true'] ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+[data-interactive-zone='true'] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+[data-interactive-zone='true'] ::-webkit-scrollbar-thumb {
+  background-color: #252834;
+  border-radius: 3px;
+}
+
+[data-interactive-zone='true'] ::-webkit-scrollbar-thumb:hover {
+  background-color: #3a3f54;
+}

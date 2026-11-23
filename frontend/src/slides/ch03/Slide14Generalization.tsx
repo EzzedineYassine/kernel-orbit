@@ -46,7 +46,16 @@ export function Slide14Generalization() {
                 ))}
                 <circle cx="152" cy="116" r="7" fill="none" stroke="#F5F5F7" strokeWidth="1.75" />
                 <circle cx="296" cy="108" r="7" fill="none" stroke="#F5F5F7" strokeWidth="1.75" />
-                <text x="166" y="120" fill="#F5F5F7" fontSize="9.5" fontFamily="JetBrains Mono">
+                <line
+                  x1="156"
+                  y1="123"
+                  x2="188"
+                  y2="180"
+                  stroke="#858A98"
+                  strokeWidth="1"
+                  strokeDasharray="2.5 2.5"
+                />
+                <text x="248" y="191" textAnchor="middle" fill="#F5F5F7" fontSize="9.5" fontFamily="JetBrains Mono">
                   missed future order
                 </text>
               </svg>
